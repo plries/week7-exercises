@@ -20,12 +20,112 @@
             <img class="nav-icon" src="images/nav/inactive.png" />
             <img class="nav-icon" src="images/nav/inactive.png" />
 
+			<img id="play-pause" src="images/nav/pause.png">
+
 	    </div>
 
+		<button onclick="set_next_image();">Next</button>
 
 	</div>
 
 	<script>	
+
+		const start_rotation = () => {
+
+			carousel_interval = window.setInterval(set_next_image, 2500);
+			playing = true;
+		}
+
+		// creates a variable to store index position of the displayed image
+		let current_index = 0;
+
+		// creates an array with paths for the images so that it can be referenced later in the code
+		const image_names = [
+			"first-slide.png",
+			"second-slide.png",
+			"third-slide.png"
+			];
+
+		// create a function to change the src="" of the big image
+		// it will reference the array above
+		const set_main_image = (image_index) => {
+
+			// 
+			document.querySelector("#main-image").src = "images/" + image_names[image_index];
+
+			// update the global variable
+			current_index = image_index;
+
+			set_nav_buttons(image_index);
+		}
+
+		// gets all icons with the .nav-icon class in an array like collection
+		const nav_icons = document.querySelectorAll(".nav-icon");
+
+		// loop through the array like collection above
+		// 	on each iteration, the nav_el contains the current icon starting from the top
+		nav_icons.forEach( (nav_el, index) => {
+
+			// add an EventListener to each icon
+			nav_el.addEventListener("mouseover", () => {
+
+				// when we hover over that icon, change the image based on the index of the forEach loop
+				set_main_image(index);
+
+				
+
+			})
+
+		});
+
+		const set_nav_buttons = (new_index) => {
+
+			const nav_icons = document.querySelectorAll(".nav-icon");
+
+			nav_icons.forEach( (nav_icon_el, loop_index) => {
+
+				nav_icon_el.src = (loop_index === new_index) ? "images/nav/active.png" : "images/nav/inactive.png" ;
+
+			});
+
+		}
+
+		const set_next_image = () => {
+
+			// if current index is greater than or equal to image_names.length - 1, reset current index to 0
+			// if current index is less, than add 1 
+			const next_index = (current_index >= image_names.length - 1) ?  0 : current_index + 1;
+
+			// set the correct image
+			set_main_image(next_index);
+
+		}
+		
+		const toggle_play_pause = () => {
+
+			// if current playing, do the pause step
+			if(playing) {
+
+				document.querySelector("#play-pause").src = "images/nav/play.png";
+				playing = false
+
+				window.clearInterval(carousel_interval);
+
+			// if current NOT playing (playing is false), do the start step
+			} else {
+
+				document.querySelector("#play-pause").src = "images/nav/pause.png";
+
+				start_rotation();
+
+			}
+
+		}
+
+		// this runs the function above
+		window.addEventListener("load", start_rotation);
+
+		document.querySelector("#play-pause").addEventListener("click", toggle_play_pause);
 
 	</script>
 
